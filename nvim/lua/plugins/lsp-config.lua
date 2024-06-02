@@ -1,26 +1,58 @@
 return {
-    {
-        "williamboman/mason.nvim",
-        config = function()
-            require("mason").setup()
-        end
-    },
-    {
-        "williamboman/mason-lspconfig.nvim",
-        config = function()
-            require("mason-lspconfig").setup({
-                ensure_installed = {"lua_ls", "ruff", "yamlls", "cypher_ls"}
+	{
+		"williamboman/mason.nvim",
+		config = function()
+			require("mason").setup()
+		end,
+	},
+	{
+		"williamboman/mason-lspconfig.nvim",
+		lazy = false,
+		opts = {
+			auto_install = true,
+		},
+		config = function()
+			require("mason-lspconfig").setup({
+				ensure_installed = { "lua_ls", "ruff_lsp", "pyright" },
+			})
+		end,
+	},
+	{
+		"neovim/nvim-lspconfig",
+		config = function()
+            local capabilities = require('cmp_nvim_lsp').default_capabilities()
+            local on_attach = function(client, bufnr)
+                if client.name == 'ruff_lsp' then
+                    -- Disable hover in favor of Pyright
+                    client.server_capabilities.hoverProvider = false
+                end
+            end
+
+			local lspconfig = require("lspconfig")
+			lspconfig.lua_ls.setup({
+                capabilities = capabilities
             })
-        end
-    },
-    {
-        "neovim/nvim-lspconfig",
-        config = function()
-            local lspconfig = require("lspconfig")
-            lspconfig.lua_ls.setup({})
-            lspconfig.ruff.setup({})
-            lspconfig.yamlls.setup({})
-            lspconfig.cypher_ls.setup({})
-        end
-    }
+			lspconfig.ruff_lsp.setup({
+                on_attach=on_attach,
+            })
+            lspconfig.pyright.setup({
+                settings = {
+                    pyright = {
+                        disableOrganizeImports = true,
+                    },
+                    python = {
+                        analysis = {
+                            ignore = {'*'},
+                        },
+                    },
+                },
+                capabilities = capabilities,
+            })
+
+            vim.keymap.set("n", "<leader>h", vim.lsp.buf.hover, {})
+            vim.keymap.set("n", "<leader>gd", vim.lsp.buf.definition, {})
+            vim.keymap.set("n", "<leader>gr", vim.lsp.buf.references, {})
+            vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, {})
+        end,
+	},
 }
