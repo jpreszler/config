@@ -5,6 +5,8 @@ vim.cmd("set tabstop=4")
 vim.cmd("set softtabstop=4")
 vim.cmd("set shiftwidth=4")
 vim.g.mapleader = ' '
+vim.keymap.set("i", "jj", "<ESC>")
+vim.keymap.set("n", "<leader>pt", "<cmd>Precognition toggle<CR>")
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
