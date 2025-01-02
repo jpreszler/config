@@ -13,7 +13,7 @@ return {
 		},
 		config = function()
 			require("mason-lspconfig").setup({
-				ensure_installed = { "lua_ls", "ruff_lsp", "pyright" },
+				ensure_installed = { "lua_ls", "ruff", "pyright" },
 			})
 		end,
 	},
@@ -22,7 +22,7 @@ return {
 		config = function()
             local capabilities = require('cmp_nvim_lsp').default_capabilities()
             local on_attach = function(client, bufnr)
-                if client.name == 'ruff_lsp' then
+                if client.name == 'ruff' then
                     -- Disable hover in favor of Pyright
                     client.server_capabilities.hoverProvider = false
                 end
@@ -32,7 +32,7 @@ return {
 			lspconfig.lua_ls.setup({
                 capabilities = capabilities
             })
-			lspconfig.ruff_lsp.setup({
+			lspconfig.ruff.setup({
                 on_attach=on_attach,
             })
             lspconfig.pyright.setup({
