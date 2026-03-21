@@ -13,7 +13,7 @@ return {
 		},
 		config = function()
 			require("mason-lspconfig").setup({
-				ensure_installed = { "lua_ls", "ruff_lsp", "pyright" },
+				ensure_installed = { "lua_ls", "ruff", "pyright" },
 			})
 		end,
 	},
@@ -21,33 +21,21 @@ return {
 		"neovim/nvim-lspconfig",
 		config = function()
             local capabilities = require('cmp_nvim_lsp').default_capabilities()
+            local servers = {
+                'pyright',
+                'lua_ls',
+                'ruff',
+            }
             local on_attach = function(client, bufnr)
-                if client.name == 'ruff_lsp' then
+                if client.name == 'ruff' then
                     -- Disable hover in favor of Pyright
                     client.server_capabilities.hoverProvider = false
                 end
             end
-
-			local lspconfig = require("lspconfig")
-			lspconfig.lua_ls.setup({
-                capabilities = capabilities
-            })
-			lspconfig.ruff_lsp.setup({
-                on_attach=on_attach,
-            })
-            lspconfig.pyright.setup({
-                settings = {
-                    pyright = {
-                        disableOrganizeImports = true,
-                    },
-                    python = {
-                        analysis = {
-                            ignore = {'*'},
-                        },
-                    },
-                },
+            vim.lsp.config('*', {
                 capabilities = capabilities,
             })
+            vim.lsp.enable(servers)
 
             vim.keymap.set("n", "<leader>h", vim.lsp.buf.hover, {})
             vim.keymap.set("n", "<leader>gd", vim.lsp.buf.definition, {})
