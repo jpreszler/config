@@ -13,7 +13,7 @@ return {
 		},
 		config = function()
 			require("mason-lspconfig").setup({
-				ensure_installed = { "lua_ls", "ruff", "pyright" },
+				ensure_installed = { "lua_ls", "ruff", "pyright", "gopls", "marksman" },
 			})
 		end,
 	},
@@ -25,7 +25,10 @@ return {
                 'pyright',
                 'lua_ls',
                 'ruff',
+                'gopls',
+                'marksman',
             }
+
             local on_attach = function(client, bufnr)
                 if client.name == 'ruff' then
                     -- Disable hover in favor of Pyright
